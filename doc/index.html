@@ -125,7 +125,7 @@
   <div id="app">加载中...</div>
 
   <script>
-    (function checkHash() {
+    function checkHash() {
       const hash = window.location.hash
 
       // 判断是否以 #/en/ 或 #/zh/ 开头
@@ -144,7 +144,18 @@
         const newUrl = window.location.origin + window.location.pathname + window.location.search + newHash
         window.location.replace(newUrl)
       }
-    })()
+    }
+
+    function checkTheme() {
+      // 默认黑色主题
+      let theme = window.localStorage.getItem('DARK_LIGHT_THEME')
+      if (!theme) {
+        window.localStorage.setItem('DARK_LIGHT_THEME', 'dark')
+      }
+    }
+
+    checkHash()
+    checkTheme()
 
     window.$docsify = {
       name: 'Listen-文档中心',
@@ -181,7 +192,7 @@
           // 解析完文档后
           hook.afterEach(function (html, next) {
             const styles = window.getComputedStyle(document.documentElement)
-            const isDark = styles.getPropertyValue('color-scheme') === 'dark'
+            const isDark = styles.getPropertyValue('color-scheme') === 'dark' || window.localStorage.getItem('DARK_LIGHT_THEME') === 'dark'
             if (isDark) {
               html = html.replaceAll('/img/light/', '/img/dark/')
             } else {
