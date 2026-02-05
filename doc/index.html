@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Listen-文档中心</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css"> -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body.dark {
+      --accent: rgb(255, 193, 7);
+      --borderColor: #333;
+    }
+
+    body.dark .app-nav li ul {
+      background-color: #2c3041;
+      border-color: #666;
+    }
+
+    body.dark .search input {
+      border-color: #495765 !important;
+    }
+
+    body .search input:focus {
+      border-color: var(--accent) !important;
+      box-shadow: none !important;
+    }
+
+    body.dark .search .matching-post {
+      border-bottom-color: #495765 !important;
+    }
+
+    .logo {
+      position: fixed;
+      top: 0;
+      left: 15px;
+      height: 55px;
+      z-index: 99;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    .logo-name {
+      font-size: 20px;
+      line-height: 30px;
+      color: var(--textColor, #34495e);
+    }
+
+    .app-nav {
+      position: fixed;
+      display: flex;
+      align-items: center;
+      height: 55px;
+      margin-top: 0;
+    }
+
+    .app-nav ul {
+      padding-left: 0;
+    }
+
+    .github-corner {
+      z-index: 99;
+    }
+
+    #docsify-darklight-theme {
+      position: fixed;
+      top: 15px;
+      right: 225px;
+      z-index: 100;
+    }
+
+    .sidebar {
+      padding-top: 55px !important;
+      transition: all 0.3s;
+    }
+
+    .app-name {
+      display: none;
+    }
+
+    .search {
+      padding: 0 15px !important;
+      margin-bottom: 0 !important;
+    }
+
+    .search .input-wrap {
+      margin-top: 0 !important;
+    }
+
+    .search input {
+      height: 34px;
+      width: 100% !important;
+    }
+
+    .markdown-section {
+      max-width: 850px;
+    }
+
+    body.dark .markdown-section tr {
+      border-top: 1px solid #444;
+    }
+
+    body.dark .markdown-section td,
+    body.dark .markdown-section th {
+      border: 1px solid #444;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="logo" href="https://listen-proxy.com">
+    <img src="favicon.ico" class="logo-icon">
+    <span class="logo-name">Listen</span>
+  </a>
+  <div id="app">加载中...</div>
+
+  <script>
+    (function checkHash() {
+      const hash = window.location.hash
+
+      // 判断是否以 #/en/ 或 #/zh/ 开头
+      const isMatched = /^#\/(en|zh)\//.test(hash)
+
+      if (!isMatched) {
+        // 获取浏览器语言 (例如 "zh-CN" 或 "en-US")
+        const lang = navigator.language || navigator.userLanguage
+        const isChinese = lang.toLowerCase().includes('zh')
+
+        // 确定目标路径
+        const targetLang = isChinese ? 'zh' : 'en'
+        const newHash = `#/${targetLang}/README`
+
+        // 构造完整 URL 并执行替换（不产生历史记录）
+        const newUrl = window.location.origin + window.location.pathname + window.location.search + newHash
+        window.location.replace(newUrl)
+      }
+    })()
+
+    window.$docsify = {
+      name: 'Listen-文档中心',
+      repo: 'https://github.com/listenproxy/listen', // 右上角 GitHub 挂件地址
+      loadNavbar: true,   // 开启导航栏
+      loadSidebar: true,  // 必须开启，用于动态展示左侧菜单
+      subMaxLevel: 4,     // 侧边栏展示的最大标题层级
+      auto2top: true,     // 切换页面后自动回到顶部
+      // 搜索配置
+      search: {
+        placeholder: {
+          '/en/': 'Type to search',
+          '/zh/': '搜索文档'
+        },
+        noData: {
+          '/en/': 'No Results',
+          '/zh/': '找不到结果'
+        },
+        pathNamespaces: ['/zh', '/en'],
+        depth: 6
+      },
+      // 代码复制插件
+      copyCode: {
+        buttonText: 'Copy',
+        errorText: 'Copy fail',
+        successText: 'Copyed'
+      },
+      plugins: [
+        function (hook, vm) {
+          // 每次页面加载完成后执行
+          // hook.doneEach(function () {
+          //   updateThemeImg()
+          // })
+          // 解析完文档后
+          hook.afterEach(function (html, next) {
+            const styles = window.getComputedStyle(document.documentElement)
+            const isDark = styles.getPropertyValue('color-scheme') === 'dark'
+            if (isDark) {
+              html = html.replaceAll('/img/light/', '/img/dark/')
+            } else {
+              html = html.replaceAll('/img/dark/', '/img/light/')
+            }
+            next(html)
+          })
+        }
+      ]
+    }
+
+    const updateThemeImg = function () {
+      const styles = window.getComputedStyle(document.documentElement)
+      const isDark = styles.getPropertyValue('color-scheme') === 'dark'
+      const imgList = document.querySelectorAll('img')
+      if (imgList) {
+        for (let i = 0; i < imgList.length; i++) {
+          let img = imgList[i]
+          if (img.src?.includes('/light/') || img.src?.includes('/dark/')) {
+            let isDarkImg = img.src.includes('/dark/')
+            if (isDarkImg !== isDark) {
+              if (isDark) {
+                img.src = img.src.replace('/light/', '/dark/')
+              } else {
+                img.src = img.src.replace('/dark/', '/light/')
+              }
+            }
+          }
+        }
+      }
+      document.body.classList.add(isDark ? 'dark' : 'light')
+      document.body.classList.remove(isDark ? 'light' : 'dark')
+    }
+
+    // 简单的观察者，监听主题切换
+    new MutationObserver(updateThemeImg).observe(document.documentElement, { attributes: true, attributeFilter: ['style'] })
+  </script>
+
+  <script src="./js/docsify.min.js"></script>
+  <script src="./js/search.min.js"></script>
+  <script src="./js/zoom-image.min.js"></script>
+  <script src="./js/docsify-darklight-theme.min.js"></script>
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script> -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script> -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script> -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script> -->
+</body>
+
+</html>

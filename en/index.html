@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/font/iconfont.css">
+  <title>Listen - Network Request Debugging Platform</title>
+  <meta name="keywords"
+    content="Listen,Network Request Debugging,Request Proxy,Request Modification,Response Modification,API Mock,Frontend Development,Testing Tools,Best HTTP Sniffer and API Testing Tool,Free to Use,Support Windows,Mac">
+  <meta name="description"
+    content="Listen is a powerful network request debugging platform providing request modification, response modification, API Mock, and more to boost frontend development and testing. A next-generation all-in-one solution for packet capturing and API testing.">
+  <style>
+    /* Amber Gold Theme Variables */
+    :root {
+      --bg-primary: #0d0d0c;
+      /* Warm Black Background */
+      --bg-secondary: #1a1917;
+      /* Dark Coffee Secondary Background */
+      --bg-card: #22211f;
+      /* Warm Dark Gray Card */
+      --accent-hover: #d4a35e;
+      /* Amber Gold */
+      --accent-primary: #e5b56e;
+      /* Bright Gold */
+      --text-primary: #e9e2d5;
+      /* Warm White Text */
+      --text-secondary: #a19a91;
+      /* Gray Gold Text */
+      --border-radius: 12px;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5%;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon {
+      width: 40px;
+      margin-right: 10px;
+    }
+
+    .app-name {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-right .icon-github {
+      font-size: 40px;
+      line-height: 1em;
+      margin-right: 10px;
+      color: var(--text-primary) !important;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color var(--transition-speed);
+      padding: 8px 0;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-primary);
+      transition: width var(--transition-speed);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Language Selector Styles */
+    .lang-selector {
+      position: relative;
+      margin-right: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lang-current {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 15px;
+      transition: color var(--transition-speed);
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
+
+    .lang-selector:hover .lang-current {
+      color: var(--text-primary);
+      background: rgba(212, 163, 94, 0.1);
+    }
+
+    .lang-current .icon-down {
+      font-size: 12px;
+      transition: transform var(--transition-speed);
+    }
+
+    .lang-selector:hover .icon-down {
+      transform: rotate(-180deg);
+    }
+
+    /* Language Dropdown Container */
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 120px;
+      padding-top: 10px;
+      z-index: 101;
+    }
+
+    .lang-selector:hover .lang-dropdown {
+      display: block;
+    }
+
+    .lang-dropdown-bg {
+      background: #2a2825;
+      border: 1px solid rgba(212, 163, 94, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .lang-item {
+      display: block;
+      padding: 10px 15px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all var(--transition-speed);
+    }
+
+    .lang-item:hover {
+      background: var(--accent-primary);
+      color: #1a1917 !important;
+    }
+
+    .lang-item.active {
+      color: var(--accent-primary);
+      font-weight: bold;
+    }
+
+    .cta-button {
+      position: relative;
+      height: 45px;
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-primary);
+      color: #1a1917 !important;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+      box-shadow: 0 4px 15px rgba(212, 163, 94, 0.3);
+      line-height: 20px;
+      font-size: 18px;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .cta-button-a {
+      white-space: nowrap;
+      color: #1a1917 !important;
+      text-decoration: none;
+    }
+
+    .cta-button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(212, 163, 94, 0.3);
+    }
+
+    .cta-button-left-icon {
+      margin-right: 10px;
+    }
+
+    .cta-button-right-icon {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      border-radius: 0 30px 30px 0;
+    }
+
+    .cta-button-left-icon .icon,
+    .cta-button-right-icon .icon {
+      font-size: 22px;
+    }
+
+    .cta-button-right-icon .icon {
+      font-size: 18px;
+      transition: all var(--transition-speed);
+    }
+
+    .cta-button-right-icon:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-button-right-icon:hover .icon-down {
+      transform: rotate(-180deg);
+    }
+
+    .apple-select-warap {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 180px;
+    }
+
+    .cta-button-right-icon:hover .apple-select-warap {
+      display: block;
+    }
+
+    .apple-select-warap-bg {
+      padding: 10px 0;
+      margin-top: 10px;
+      background: #332f2a;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all var(--transition-speed);
+    }
+
+    .apple-select-item {
+      padding: 0 10px;
+      color: white;
+    }
+
+    .apple-select-item-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-primary) !important;
+      text-decoration: none;
+    }
+
+    .apple-select-item-inner:hover {
+      background-color: var(--accent-primary);
+      color: #1a1917 !important;
+    }
+
+    /* Hero Area */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      min-height: 85vh;
+      padding: 8rem 2.5vw 6rem;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(212, 163, 94, 0.15) 0%, transparent 40%),
+        linear-gradient(to bottom right, #0d0d0c, #1a1917);
+    }
+
+    .hero-content {
+      max-width: 450px;
+      flex-shrink: 0;
+      margin: 0 2.5vw;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-buttons .cta-button {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-image {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+      max-width: 1080px;
+      margin: 0 2.5vw;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 1200px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, #f2d2a4, var(--accent-primary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Feature Cards */
+    .features {
+      padding: 4rem 5%;
+      background-color: var(--bg-primary);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 3rem;
+    }
+
+    .features-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4rem;
+    }
+
+    .feature-card {
+      width: 350px;
+      flex-grow: 1;
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 2.5rem;
+      transition: all var(--transition-speed);
+      border: 1px solid rgba(212, 163, 94, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(212, 163, 94, 0.3);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.8rem;
+      background: rgba(212, 163, 94, 0.1);
+      font-size: 1.8rem;
+      color: var(--accent-primary);
+    }
+
+    .feature-icon .icon {
+      font-size: 30px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Detailed Introduction */
+    .desc-wrap {
+      padding: 3rem 0;
+      background: radial-gradient(circle at 80% 20%, rgba(212, 163, 94, 0.1) 0%, transparent 40%),
+        linear-gradient(to bottom right, #0d0d0c, #1a1917);
+    }
+
+    .desc-wrap-item {
+      padding: 3rem 2.5vw;
+      display: flex;
+      justify-content: center;
+    }
+
+    .desc-item-reverse {
+      flex-direction: row-reverse;
+    }
+
+    .desc-title-wrap {
+      max-width: 450px;
+      flex-shrink: 0;
+      margin: 1rem 2.5vw 20px 2.5vw;
+    }
+
+    .desc-title {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .desc-title .icon {
+      font-size: 1.8rem;
+      margin-right: 10px;
+      color: var(--accent-primary);
+    }
+
+    .desc-wrap .desc {
+      display: block;
+      padding-left: 2px;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+    }
+
+    .desc-img-wrap {
+      max-width: 850px;
+      flex-grow: 1;
+      margin: 0 2.5vw;
+    }
+
+    .desc-img-wrap img {
+      width: 100%;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Use Cases Section */
+    .use-cases {
+      padding: 5rem 5%;
+      background: linear-gradient(to bottom, var(--bg-primary), #1a1917);
+    }
+
+    .cases-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+
+    .case-card {
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .case-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .case-number {
+      background: var(--accent-primary);
+      color: #1a1917;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      padding: 4rem 5% 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1.8rem;
+      position: relative;
+      color: var(--text-primary);
+      padding-bottom: 0.8rem;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--accent-primary);
+      border-radius: 3px;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-speed);
+      display: inline-block;
+      padding: 0.2rem 0;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-primary);
+      transform: translateX(5px);
+    }
+
+    .copyright {
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding: 10px 0;
+    }
+
+    @media (max-width: 1230px) {
+      .desc-wrap-item {
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-content {
+        padding-right: 0;
+        margin-bottom: 3rem;
+        max-width: 100%;
+      }
+
+      .hero p {
+        margin: 0 auto 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .cases-container {
+        grid-template-columns: 1fr;
+      }
+
+      .copyright {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a class="logo">
+      <img src="../favicon.ico" class="logo-icon">
+      <span class="app-name">Listen</span>
+    </a>
+    <div class="nav-right">
+      <div class="lang-selector">
+        <div class="lang-current">
+          <i class="icon icon-global"></i> <span>English</span>
+          <i class="icon icon-down"></i>
+        </div>
+        <div class="lang-dropdown">
+          <div class="lang-dropdown-bg">
+            <a href="/index.html" class="lang-item">简体中文</a>
+            <a href="" class="lang-item active">English</a>
+          </div>
+        </div>
+      </div>
+      <a class="icon icon-github" href="https://github.com/listenproxy/listen"></a>
+      <a class="cta-button" href="/doc/index.html">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>The Modern HTTP Proxy</h1>
+      <p>Listen is the ultimate tool for frontend development and testing, providing request/response modification, API
+        Mocking, and more to debug with efficiency.</p>
+      <div class="hero-buttons">
+        <a class="cta-button" style="width:160px;min-width:140px;"
+          href="https://cdn.listen-proxy.com/updates/win/listen-1.0.0 Setup.exe">
+          <span class="cta-button-left-icon">
+            <i class="icon icon-windows"></i>
+          </span>
+          <span>Windows</span>
+        </a>
+        <span style="width:50px;"></span>
+        <div class="cta-button" style="width:220px;min-width:210px;padding-right:45px;justify-content:flex-end;">
+          <span class="cta-button-left-icon">
+            <i class="icon icon-macos"></i>
+          </span>
+          <a class="cta-button-a"
+            href="https://cdn.listen-proxy.com/updates/darwin/arm64/listen-macos-arm64-1.0.0.dmg">MacOS (Apple)</a>
+          <span class="cta-button-right-icon">
+            <i class="icon icon-down"></i>
+            <div class="apple-select-warap">
+              <div class="apple-select-warap-bg">
+                <div class="apple-select-item">
+                  <a class="apple-select-item-inner"
+                    href="https://cdn.listen-proxy.com/updates/darwin/x64/listen-macos-x64-1.0.0.dmg">
+                    <i class="icon icon-intel"></i>
+                    <span>Intel</span>
+                  </a>
+                </div>
+                <div class="apple-select-item">
+                  <a class="apple-select-item-inner"
+                    href="https://cdn.listen-proxy.com/updates/darwin/arm64/listen-macos-arm64-1.0.0.dmg">
+                    <i class="icon icon-macos"></i>
+                    <span>Apple silicon</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="img/banner.png" style="width:100%;">
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2 class="section-title">Core Features</h2>
+    <p class="section-subtitle">Full control over network requests to boost development and testing efficiency</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-gateway"></i>
+        </div>
+        <h3>Gateway</h3>
+        <p>Block requests from being sent to the server or prevent responses from returning to the client.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-mirror"></i>
+        </div>
+        <h3>Mirror</h3>
+        <p>Replace the request domain with a specified domain, similar to modifying local hosts files.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-map"></i>
+        </div>
+        <h3>Mapping</h3>
+        <p>Map request URLs to local file paths or directories for easy debugging.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-pen"></i>
+        </div>
+        <h3>Rewrite</h3>
+        <p>Automatically modify and replace requests and responses using pre-defined rules.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-bug"></i>
+        </div>
+        <h3>Breakpoint</h3>
+        <p>Intercept requests and responses for manual modification or inspection.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-script"></i>
+        </div>
+        <h3>Scripting</h3>
+        <p>Write JavaScript code to intercept and modify requests and responses with maximum flexibility.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-websocket"></i>
+        </div>
+        <h3>WebSocket</h3>
+        <p>Inspect WebSocket connections and simulate message sending. Intercept messages via Rewrite and Scripting.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="icon icon-send"></i>
+        </div>
+        <h3>API Mocking</h3>
+        <p>Construct arbitrary HTTP/HTTPS requests to test your interfaces easily.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="desc-wrap">
+    <div class="desc-wrap-item">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-gateway"></i>
+          <span>Gateway</span>
+        </div>
+        <span class="desc">The Gateway feature allows you to block or hang requests, preventing them from reaching the
+          server for filtering and control.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/gateway.png" alt="Gateway feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item desc-item-reverse">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-mirror"></i>
+          <span>Mirror</span>
+        </div>
+        <span class="desc">Mirroring redirects requests by replacing domains. It's more convenient and faster than
+          manually editing your hosts file.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/gateway.png" alt="Mirror feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-map"></i>
+          <span>Mapping</span>
+        </div>
+        <span class="desc">Mapping replaces request URLs with local file paths or directories, enabling local mapping of
+          individual files or entire sites.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/mirror.png" alt="Mapping feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item desc-item-reverse">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-pen"></i>
+          <span>Rewrite</span>
+        </div>
+        <span class="desc">Rewrite requests before they reach the server or modify responses before they return to the
+          client based on custom rules.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/rewrite.png" alt="Rewrite feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-bug"></i>
+          <span>Breakpoint</span>
+        </div>
+        <span class="desc">Pause requests or responses at specific points for manual inspection and modification during
+          the debug process.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/break.png" alt="Breakpoint feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item desc-item-reverse">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-script"></i>
+          <span>Scripting</span>
+        </div>
+        <span class="desc">Use custom JavaScript code to programmatically modify requests and responses for flexible
+          control and complex logic.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/script.png" alt="Scripting feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-websocket"></i>
+          <span>WebSocket</span>
+        </div>
+        <span class="desc">
+          Excellent WebSocket support for viewing and searching messages. Send messages directly or intercept them using
+          the Rewrite and Scripting features.
+        </span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/websocket.png" alt="WebSocket feature">
+      </div>
+    </div>
+    <div class="desc-wrap-item desc-item-reverse">
+      <div class="desc-title-wrap">
+        <div class="desc-title">
+          <i class="icon icon-send"></i>
+          <span>API Mocking</span>
+        </div>
+        <span class="desc">Construct any HTTP/HTTPS request (URL, Method, Header, Body) to test API interfaces. Supports
+          collection storage for reuse.</span>
+      </div>
+      <div class="desc-img-wrap">
+        <img src="img/api.png" alt="API Mocking feature">
+      </div>
+    </div>
+  </section>
+
+  <section id="use-cases" class="use-cases" style="display: none;">
+    <h2 class="section-title">Use Cases</h2>
+    <p class="section-subtitle">Solving key problems in real-world development</p>
+
+    <div class="cases-container">
+      <div class="case-card">
+        <div class="case-header">
+          <div class="case-number">1</div>
+          <h3>Frontend Decoupling</h3>
+        </div>
+        <p>Independent development by mocking response data when the backend API is not yet ready.</p>
+      </div>
+
+      <div class="case-card">
+        <div class="case-header">
+          <div class="case-number">2</div>
+          <h3>Edge Case Testing</h3>
+        </div>
+        <p>Simulate error status codes, empty data, or oversized responses to verify frontend robustness.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" style="display: none;">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h3>Product</h3>
+        <ul class="footer-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Browser Extension</a></li>
+          <li><a href="#">Desktop App</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+          <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+          <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <div class="copyright">
+    &copy; 2025 Listen Inc. All rights reserved. 湘ICP备20012536号-2
+  </div>
+</body>
+
+</html>
