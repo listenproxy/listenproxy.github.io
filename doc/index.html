@@ -60,8 +60,7 @@
       position: fixed;
       display: flex;
       align-items: center;
-      height: 55px;
-      margin-top: 0;
+      margin-top: 10px;
     }
 
     .app-nav ul {
@@ -74,7 +73,8 @@
 
     #docsify-darklight-theme {
       position: fixed;
-      top: 15px;
+      left: auto;
+      top: 14px;
       right: 225px;
       z-index: 100;
     }
@@ -118,7 +118,7 @@
 </head>
 
 <body>
-  <a class="logo" href="https://listen-proxy.com">
+  <a class="logo" href="/">
     <img src="favicon.ico" class="logo-icon">
     <span class="logo-name">Listen</span>
   </a>
@@ -199,6 +199,12 @@
               html = html.replaceAll('/img/dark/', '/img/light/')
             }
             next(html)
+
+            if (/^#\/zh\//.test(window.location.hash)) {
+              document.querySelector('.logo').href = '/zh/'
+            } else {
+              document.querySelector('.logo').href = '/en/'
+            }
           })
         }
       ]
