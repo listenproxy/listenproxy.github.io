@@ -46,8 +46,17 @@
     }
 
     .logo-icon {
+      display: none;
       height: 30px;
       margin-right: 10px;
+    }
+
+    body.dark .logo-icon.dark {
+      display: inline-block;
+    }
+
+    body.light .logo-icon.light {
+      display: inline-block;
     }
 
     .logo-name {
@@ -119,7 +128,8 @@
 
 <body>
   <a class="logo" href="/">
-    <img src="favicon.ico" class="logo-icon">
+    <img src="favicon.ico" class="logo-icon dark">
+    <img src="favicon-light.ico" class="logo-icon light">
     <span class="logo-name">Listen</span>
   </a>
   <div id="app">加载中...</div>
